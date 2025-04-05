@@ -1,0 +1,87 @@
+package com.example.demo.repository;
+
+import java.sql.ResultSet;
+
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.List;
+import java.util.Date;
+import org.springframework.jdbc.core.PreparedStatementSetter;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Repository;
+import org.springframework.jdbc.core.RowMapper;
+
+import com.example.demo.model.OwnerModel;
+
+@Repository
+public class OwnerRepository {
+
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+
+    // Add new owner
+    public boolean isAddNewOwner(OwnerModel model) {
+        Timestamp currentTimestamp = new Timestamp(new Date().getTime());
+
+        int rowsAffected = jdbcTemplate.update(
+            "INSERT INTO owners (name, email, password, phone, created_at) VALUES (?, ?, ?, ?, ?)", 
+            new PreparedStatementSetter() {
+                @Override
+                public void setValues(java.sql.PreparedStatement ps) throws java.sql.SQLException {
+                ps.setString(1, model.getName());
+                ps.setString(2, model.getEmail());
+                ps.setString(3, model.getPassword());
+                ps.setString(4, model.getPhone());
+                ps.setTimestamp(5, currentTimestamp);
+                }
+            }
+        		);
+           
+        return rowsAffected > 0;
+    }
+
+    // Get all owners
+    public List<OwnerModel> getAllOwners() {
+        return jdbcTemplate.query("SELECT * FROM owners", new RowMapper<OwnerModel>() {
+            @Override
+            public OwnerModel mapRow(ResultSet rs, int rowNum) throws SQLException {
+                OwnerModel owner = new OwnerModel();
+                owner.setOwner_id(rs.getInt("owner_id"));
+                owner.setName(rs.getString("name"));
+                owner.setEmail(rs.getString("email"));
+                owner.setPassword(rs.getString("password"));
+                owner.setPhone(rs.getString("phone"));
+                owner.setCreated_at(rs.getTimestamp("created_at"));
+                return owner;
+            }
+        });
+    }
+
+    // Search owner by ID
+    public OwnerModel searchById(int id) {
+        List<OwnerModel> list = jdbcTemplate.query(
+            "SELECT * FROM owners WHERE owner_id = ?", new Object[]{id}, 
+            new RowMapper<OwnerModel>() {
+                @Override
+                public OwnerModel mapRow(ResultSet rs, int rowNum) throws SQLException {
+                    OwnerModel owner = new OwnerModel();
+                    owner.setOwner_id(rs.getInt("owner_id"));
+                    owner.setName(rs.getString("name"));
+                    owner.setEmail(rs.getString("email"));
+                    owner.setPassword(rs.getString("password"));
+                    owner.setPhone(rs.getString("phone"));
+                    owner.setCreated_at(rs.getTimestamp("created_at"));
+                    return owner;
+                }
+            });
+
+        return list.isEmpty() ? null : list.get(0);
+    }
+
+    // Delete owner by ID
+    public boolean deleteById(int id) {
+        int rowsAffected = jdbcTemplate.update("DELETE FROM owners WHERE owner_id = ?", id);
+        return rowsAffected > 0;
+    }
+}

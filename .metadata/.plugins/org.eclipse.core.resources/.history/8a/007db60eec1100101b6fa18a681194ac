@@ -1,0 +1,54 @@
+	package com.example.demo.controller;
+	
+	import java.util.List;
+	import org.springframework.beans.factory.annotation.Autowired;
+	import org.springframework.web.bind.annotation.*;
+	
+	import com.example.demo.exception.ValueNotFoundException;
+	import com.example.demo.model.OwnerModel;
+	import com.example.demo.services.OwnerService;
+	
+	@RestController
+//	@RequestMapping("/owners")
+	public class CustomerController {
+	    @Autowired
+	    private OwnerService ownerService;
+	    
+	    @PostMapping("/addCustomer")  // Change this to test
+	    public String createOwner(@RequestBody OwnerModel model) {
+	        boolean success = ownerService.isAddNewOwner(model);
+	        return success ? "Owner Added" : "Owner not added";
+	    }
+	
+	   
+	    
+	    @GetMapping("/getAllCustomers")
+	    public List<OwnerModel> getAllOwners(){
+	        List<OwnerModel> list = ownerService.getAllOwners();
+	        if (!list.isEmpty()) {
+	            return list;
+	        } else {
+	            throw new ValueNotFoundException("No owners found in the database.");
+	        }
+	    }
+	    
+	    @GetMapping("/getCustomersById/{id}")
+	    public OwnerModel searchById(@PathVariable("id") Integer id){
+	        OwnerModel owner = ownerService.searchById(id);
+	        if (owner != null) {
+	            return owner;
+	        } else {
+	            throw new ValueNotFoundException("Owner not found with ID: " + id);
+	        }
+	    }
+	  
+	    @DeleteMapping("/deleteCustomersById/{id}")
+	    public String deleteById(@PathVariable("id") Integer id){
+	        boolean success = ownerService.deleteById(id);
+	        if (success) {
+	            return "Owner Deleted";
+	        } else {
+	            throw new ValueNotFoundException("Owner not found with ID: " + id);
+	        }
+	    }
+	}

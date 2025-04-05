@@ -1,0 +1,53 @@
+package com.example.demo.controller;
+
+public class OwnerController {
+	@Autowired
+    private EmployeeService empService;
+    
+    @PostMapping("/createEmployee")
+    public String createEmployee(@RequestBody Employee emp) {
+        boolean success = empService.isAddNewEmployee(emp);
+        if (success) { 
+            return "Employee Added";
+        } else {
+            return "Employee not added";
+        }
+    }
+    
+    @GetMapping("/viewAllEmployee")
+    public List<Employee> getAllEmployee(){
+    List <Employee>list =  empService.getAllEmployee();
+    if(list.size()!=0) {
+    	return list;
+    }
+    else {
+    	throw new EmployeeNotFoundException("There is no value in table");
+    }
+    }
+    
+    @GetMapping("/searchById/{empid}")
+    public Employee searchById(@PathVariable("empid") Integer id){
+		Employee emp = empService.searchById(id);
+    	if(emp!=null) {
+    		return emp;
+    		 
+    	}	
+    	else {
+    		throw new EmployeeNotFoundException("Employee not found");
+    	}
+		
+        }
+  
+    @GetMapping("/deleteById/{empid}")
+    
+    public String deleteById(@PathVariable("empid") Integer id){
+		boolean b = empService.deleteById(id);
+    	if(b) {
+    		return "Employee Deleted";	 
+    	}	
+    	else {
+    		throw new EmployeeNotFoundException("Employee not found"+id);
+    	}
+		
+        }
+}

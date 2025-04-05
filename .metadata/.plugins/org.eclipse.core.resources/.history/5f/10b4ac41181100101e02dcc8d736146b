@@ -1,0 +1,60 @@
+package com.example.demo.repository;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import com.example.demo.model.OwnerModel;
+import com.example.demo.services.OwnerService;
+
+@RestController
+@RequestMapping("/api")
+public class OwnerController {
+
+    private final OwnerService ownerService;
+
+    @Autowired
+    public OwnerController(OwnerService ownerService) {
+        this.ownerService = ownerService;
+    }
+    
+    // 1. Add New Owner
+    @PostMapping("/add")
+    public ResponseEntity<String> addOwner(@RequestBody OwnerModel owner) {
+        boolean isAdded = ownerService.addNewOwner(owner);
+        return isAdded ? ResponseEntity.ok("Owner added successfully") 
+                       : ResponseEntity.badRequest().body("Failed to add owner");
+    }
+
+    // 2. Search by ID
+    @GetMapping("/search/{ownerId}")
+    public ResponseEntity<OwnerModel> getOwnerById(@PathVariable int ownerId) {
+        OwnerModel owner = ownerService.getOwnerById(ownerId);
+        return (owner != null) ? ResponseEntity.ok(owner) : ResponseEntity.notFound().build();
+    }
+
+    // 3. Search by Name
+    @GetMapping("/searchByName/{name}")
+    public ResponseEntity<List<OwnerModel>> getOwnerByName(@PathVariable String name) {
+        List<OwnerModel> owners = ownerService.getOwnerByName(name);
+        return owners.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(owners);
+    }
+
+    // 4. Delete by ID
+    @DeleteMapping("/delete/{ownerId}")
+    public ResponseEntity<String> deleteOwnerById(@PathVariable int ownerId) {
+        return ownerService.deleteOwnerById(ownerId)
+                ? ResponseEntity.ok("Owner deleted successfully")
+                : ResponseEntity.badRequest().body("Failed to delete owner");
+    }
+
+    // 5. Delete by Name
+    @DeleteMapping("/deleteByName/{name}")
+    public ResponseEntity<String> deleteOwnerByName(@PathVariable String name) {
+        return ownerService.deleteOwnerByName(name)
+                ? ResponseEntity.ok("Owner deleted successfully")
+                : ResponseEntity.badRequest().body("Failed to delete owner");
+    }
+}

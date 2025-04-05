@@ -1,0 +1,46 @@
+package com.example.demo.services;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
+
+import com.example.demo.model.CustomerModel;
+import com.example.demo.model.OwnerModel;
+import com.example.demo.repository.CustomerRepository;
+
+@Service
+public class CustomerService {
+	@Autowired
+	CustomerRepository repo;
+	
+	public boolean isAddNewCustomer(OwnerModel model) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	
+
+	public OwnerModel searchById(Integer id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public List<CustomerModel> getAllCustomers() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+
+	public boolean deleteById(Integer id) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+	
+	
+
+	
+
+}

@@ -1,0 +1,31 @@
+package com.example.demo.services;
+
+import java.util.List;
+
+import com.example.demo.model.OwnerModel;
+
+public class OwnerService {
+
+	public boolean isAddNewOwner(OwnerModel emp) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	public List<OwnerModel> getAllOwner() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public OwnerModel searchById(Integer id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	
+
+	public boolean deleteById(Integer id) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+}

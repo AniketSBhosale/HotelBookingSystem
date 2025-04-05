@@ -1,0 +1,95 @@
+package com.example.demo.repository;
+
+import com.example.demo.model.OwnerModel;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementSetter;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Repository;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.List;
+
+@Repository
+public class OwnerRepository {
+
+    @Autowired
+    private JdbcTemplate template;
+
+    // Get all employees
+    public List<OwnerModel> getAllEmployee() {
+        return template.query("SELECT * FROM employee", new RowMapper<OwnerModel>() {
+            @Override
+            public OwnerModel mapRow(ResultSet rs, int rowNum) throws SQLException {
+                OwnerModel owner = new OwnerModel();
+                owner.setOwner_id(rs.getInt(1));
+                owner.setName(rs.getString(2));
+                owner.setSalary(rs.getDouble(3));  // Ensure salary exists in OwnerModel
+                owner.setCity(rs.getString(4));  // Ensure city exists in OwnerModel
+                return owner;
+            }
+        });
+    }
+
+    // Get owner by ID
+    public OwnerModel getOwnerById(int ownerId) {
+        String sql = "SELECT * FROM employee WHERE empid = ?";
+        return template.queryForObject(sql, new Object[]{ownerId}, new RowMapper<OwnerModel>() {
+            @Override
+            public OwnerModel mapRow(ResultSet rs, int rowNum) throws SQLException {
+                OwnerModel owner = new OwnerModel();
+                owner.setOwnerId(rs.getInt("empid"));
+                owner.setName(rs.getString("name"));
+                owner.setSalary(rs.getDouble("salary"));
+                owner.setCity(rs.getString("city"));
+                return owner;
+            }
+        });
+    }
+
+    // Get owner(s) by name
+    public List<OwnerModel> getOwnerByName(String name) {
+        String sql = "SELECT * FROM employee WHERE LOWER(name) = LOWER(?)";
+        return template.query(sql, new Object[]{name}, new RowMapper<OwnerModel>() {
+            @Override
+            public OwnerModel mapRow(ResultSet rs, int rowNum) throws SQLException {
+                OwnerModel owner = new OwnerModel();
+                owner.setOwnerId(rs.getInt("empid"));
+                owner.setName(rs.getString("name"));
+                owner.setSalary(rs.getDouble("salary"));
+                owner.setCity(rs.getString("city"));
+                return owner;
+            }
+        });
+    }
+
+    // Delete owner by ID
+    public boolean deleteOwnerById(int ownerId) {
+        int rowsAffected = template.update("DELETE FROM employee WHERE empid = ?", ownerId);
+        return rowsAffected > 0;
+    }
+
+    // Delete owner(s) by name
+    public boolean deleteOwnerByName(String name) {
+        int rowsAffected = template.update("DELETE FROM employee WHERE LOWER(name) = LOWER(?)", name);
+        return rowsAffected > 0;
+    }
+
+    // Add a new owner
+    public boolean addNewOwner(OwnerModel owner) {
+        int rowsAffected = template.update(
+            "INSERT INTO employee (empid, name, salary, city) VALUES (?, ?, ?, ?)",
+            owner.getOwnerId(), owner.getName(), owner.getSalary(), owner.getCity()
+        );
+        return rowsAffected > 0;
+    }
+
+    // Update owner details
+    public boolean updateOwner(OwnerModel owner) {
+        int rowsAffected = template.update(
+            "UPDATE employee SET name = ?, salary = ?, city = ? WHERE empid = ?",
+            owner.getName(), owner.getSalary(), owner.getCity(), owner.getOwnerId()
+        );
+        return rowsAffected > 0;
+    }
+}

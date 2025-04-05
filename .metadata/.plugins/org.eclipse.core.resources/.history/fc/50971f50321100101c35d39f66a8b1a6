@@ -1,0 +1,48 @@
+package com.example.demo.controller;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import com.example.demo.model.OwnerModel;
+import com.example.demo.services.OwnerService;
+import java.util.List;
+
+@RestController
+@RequestMapping("/api")
+public class OwnerController {
+
+    private final OwnerService ownerServices;
+
+    // 1. Get Owner by ID
+    @GetMapping("/owners/{ownerId}")
+    public ResponseEntity<OwnerModel> getOwnerById(@PathVariable int ownerId) {
+        OwnerModel owner = ownerServices.getOwnerById(ownerId);
+        return owner != null ? ResponseEntity.ok(owner) : ResponseEntity.notFound().build();
+    }
+
+    // 2. Get Owner(s) by Name
+    @GetMapping("/owners/search/{name}")
+    public ResponseEntity<List<OwnerModel>> getOwnerByName(@PathVariable String name) {
+        List<OwnerModel> owners = ownerServices.getOwnerByName(name);
+        return owners.isEmpty() ? ResponseEntity.notFound().build() : ResponseEntity.ok(owners);
+    }
+
+    // 3. Delete Owner by ID
+    @DeleteMapping("/owners/{ownerId}")
+    public ResponseEntity<Void> deleteOwnerById(@PathVariable int ownerId) {
+        return ownerServices.deleteOwnerById(ownerId) ? ResponseEntity.noContent().build() : ResponseEntity.badRequest().build();
+    }
+
+    // 4. Delete Owner(s) by Name
+    @DeleteMapping("/owners/deleteByName/{name}")
+    public ResponseEntity<Void> deleteOwnerByName(@PathVariable String name) {
+        return ownerServices.deleteOwnerByName(name) ? ResponseEntity.noContent().build() : ResponseEntity.badRequest().build();
+    }
+
+    // 5. Add New Owner
+    @PostMapping("/owners")
+    public ResponseEntity<String> addNewOwner(@RequestBody OwnerModel owner) {
+        boolean isAdded = ownerServices.addNewOwner(owner);
+        return isAdded ? ResponseEntity.ok("Owner added successfully") : ResponseEntity.badRequest().body("Failed to add owner");
+    }
+}

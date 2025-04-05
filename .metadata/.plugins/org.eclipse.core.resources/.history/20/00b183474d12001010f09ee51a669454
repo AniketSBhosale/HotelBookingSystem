@@ -1,0 +1,29 @@
+package com.example.demo.services;
+
+import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import com.example.demo.model.OwnerModel;
+import com.example.demo.repository.OwnerRepository;
+
+@Service
+public class OwnerService {
+    @Autowired
+    private OwnerRepository ownerRepository;
+
+    public boolean isAddNewOwner(OwnerModel owner) {
+        return ownerRepository.isAddNewOwner(owner);
+    }
+
+    public List<OwnerModel> getAllOwners() {
+        return ownerRepository.getAllOwners();
+    }
+
+    public OwnerModel searchById(Integer id) {
+        return ownerRepository.searchById(id);
+    }
+
+    public boolean deleteById(Integer id) {
+        return ownerRepository.deleteById(id);
+    }
+}

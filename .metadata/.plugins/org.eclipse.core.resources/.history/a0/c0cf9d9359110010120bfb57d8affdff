@@ -1,0 +1,65 @@
+package com.example.demo.controller;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+
+import com.example.demo.exception.ValueNotFoundException;
+import com.example.demo.model.OwnerModel;
+import com.example.demo.services.OwnerService;
+
+public class OwnerController {
+	@Autowired
+    private OwnerService ownerService;
+    
+    @PostMapping("/createOwners")
+    public String createOwners(@RequestBody OwnerModel model) {
+        boolean success = ownerService.isAddNewOwner(model);
+        if (success) { 
+            return "Employee Added";
+        } else {
+            return "Employee not added";
+        }
+    }
+    
+    @GetMapping("/viewAllEmployee")
+    public List<OwnerModel> getAllOwner(){
+    List <OwnerModel>list =  ownerService.getAllOwner();
+    if(list.size()!=0) {
+    	return list;
+    }
+    else {
+    	throw new ValueNotFoundException("There is no value in table");
+    }
+    }
+    
+    @GetMapping("/searchById/{empid}")
+    public OwnerModel searchById(@PathVariable("empid") Integer id){
+		OwnerModel emp = ownerService.searchById(id);
+    	if(emp!=null) {
+    		return emp;
+    		 
+    	}	
+    	else {
+    		throw new ValueNotFoundException("Employee not found");
+    	}
+		
+        }
+  
+    @GetMapping("/deleteById/{empid}")
+    
+    public String deleteById(@PathVariable("empid") Integer id){
+		boolean b = ownerService.deleteById(id);
+    	if(b) {
+    		return "Employee Deleted";	 
+    	}	
+    	else {
+    		throw new EmployeeNotFoundException("Employee not found"+id);
+    	}
+		
+        }
+}

@@ -1,0 +1,36 @@
+package com.example.demo.controller;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.example.demo.model.CustomerModel;
+import com.example.demo.services.CustomerService;
+
+@RestController
+public class CustomerController {
+	@Autowired
+	CustomerService service;
+	
+	@PostMapping
+	public String isAddCutomers() {
+		Boolean b = service.isAddCutomers();
+		if(b) {
+			return "Customers Added Sucessfully";
+		}
+		else {
+			return "Customers Not Added Sucessfully";
+		
+		}
+	}
+	@GetMapping
+	public List<CustomerModel> viewAllCustomers() {
+		List list = service.viewAllCustomers();
+		return list;
+				
+		
+	}
+}
