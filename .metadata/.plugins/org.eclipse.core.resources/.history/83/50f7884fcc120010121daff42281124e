@@ -1,0 +1,38 @@
+package com.example.demo.repository;
+
+import java.sql.Timestamp;
+import java.util.Date;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementSetter;
+import org.springframework.stereotype.Repository;
+
+import com.example.demo.model.UsersModel;
+@Repository
+public class UsersRepository {
+	@Autowired
+		JdbcTemplate template;
+	public boolean isAddNewUser(UsersModel model) {
+	    Timestamp currentTimestamp = new Timestamp(new Date().getTime());
+
+	    int rowsAffected = template.update(
+	        "INSERT INTO users (name, email, password, phone, role_id, created_at) VALUES (?, ?, ?, ?, ?, ?)", 
+	        new PreparedStatementSetter() {
+	            @Override
+	            public void setValues(java.sql.PreparedStatement ps) throws java.sql.SQLException {
+	                ps.setString(1, model.getName());
+	                ps.setString(2, model.getEmail());
+	                ps.setString(3, model.getPassword());
+	                ps.setString(4, model.getPhone());
+	                ps.setInt(5, model.getRole_id());  // Corrected index (was 4)
+	                ps.setTimestamp(6, currentTimestamp); // Corrected index (was 5)
+	            }
+	        }
+	    );
+
+	    return rowsAffected > 0;
+	}
+
+
+}

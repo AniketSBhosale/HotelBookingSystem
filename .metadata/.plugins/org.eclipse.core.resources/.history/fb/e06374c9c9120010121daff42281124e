@@ -1,0 +1,15 @@
+package com.example.demo.repository;
+
+import org.springframework.stereotype.Repository;
+
+import com.example.demo.model.UsersModel;
+@Repository
+public class UsersRepository {
+
+	public boolean isAddNewUser(UsersModel model) {
+		return false;
+		// TODO Auto-generated method stub
+		
+	}
+
+}

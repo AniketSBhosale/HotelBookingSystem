@@ -1,0 +1,15 @@
+package com.example.demo.repository;
+
+import org.springframework.stereotype.Repository;
+
+import com.example.demo.model.HotelsModel;
+
+@Repository
+public class HotelsRepository {
+
+	public Boolean isAddNewHotel(HotelsModel model) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+}

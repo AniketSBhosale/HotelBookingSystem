@@ -1,0 +1,12 @@
+package com.example.demo.repository;
+
+import com.example.demo.model.UsersModel;
+
+public class UsersRepository {
+
+	public void isAddNewUser(UsersModel model) {
+		// TODO Auto-generated method stub
+		
+	}
+
+}

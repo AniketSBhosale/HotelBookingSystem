@@ -1,0 +1,10 @@
+package com.example.demo.model;
+
+import lombok.Data;
+
+@Data
+public class HotelModel {
+private int hotel_id;
+private int owner_id;
+
+}
