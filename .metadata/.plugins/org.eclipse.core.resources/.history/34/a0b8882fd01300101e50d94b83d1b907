@@ -1,0 +1,14 @@
+package com.example.demo.model;
+
+import java.sql.Timestamp;
+import lombok.Data;
+
+@Data
+public class HotelsModel {
+    private int hotel_id;
+    private int owner_id;   // Ensure this matches an existing user_id in the Users table
+    private String name;
+    private String location;
+    private String category;
+    private Timestamp created_at;  // Renamed from 'timestamp' to 'created_at'
+}

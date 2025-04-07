@@ -5,10 +5,10 @@ import lombok.Data;
 
 @Data
 public class HotelsModel {
-private int hotel_id;
-private int owner_id;
-private String name;
-private String location;
-private String category;
-private Timestamp timestamp;
+    private int hotel_id;
+    private int owner_id;   
+    private String name;
+    private String location;
+    private String category;
+    private Timestamp created_at;  
 }

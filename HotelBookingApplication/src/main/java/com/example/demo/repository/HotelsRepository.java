@@ -16,18 +16,28 @@ public class HotelsRepository {
 
     public Boolean isAddNewHotel(HotelsModel model) {
         String sql = "INSERT INTO hotels (owner_id, name, location, category, created_at) VALUES (?, ?, ?, ?, ?)";
+       
+        if (!isValidOwner(model.getOwner_id())) {
+            System.out.println("Invalid owner ID: " + model.getOwner_id());
+            return false;
+        }
+
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 
-        
-            int rowsAffected = template.update(sql, 
-                model.getOwner_id(), 
-                model.getName() ,
-                model.getLocation(),
-                model.getCategory(),
-                timestamp
-            );
+        int rowsAffected = template.update(sql, 
+            model.getOwner_id(), 
+            model.getName(),
+            model.getLocation(),
+            model.getCategory(),
+            timestamp
+        );
 
-            return rowsAffected > 0;
-       
+        return rowsAffected > 0;
+    }
+
+    private boolean isValidOwner(int ownerId) {
+        String checkOwnerSql = "SELECT COUNT(*) FROM userss WHERE user_id = ?";
+        Integer count = template.queryForObject(checkOwnerSql, new Object[]{ownerId}, Integer.class);
+        return count != null && count > 0;
     }
 }
