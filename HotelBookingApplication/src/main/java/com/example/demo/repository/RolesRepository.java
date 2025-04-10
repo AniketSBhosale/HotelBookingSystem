@@ -13,8 +13,6 @@ import com.example.demo.model.RolesModel;
 
 @Repository
 public class RolesRepository {
-
-
 	
 	List<RolesModel> list;
 	@Autowired

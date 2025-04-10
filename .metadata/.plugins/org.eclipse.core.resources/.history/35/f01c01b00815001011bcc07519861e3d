@@ -1,0 +1,72 @@
+package com.example.demo.model;
+
+import java.math.BigDecimal;
+import java.sql.Timestamp;
+
+public class RoomsModel {
+
+    private int room_id;
+    private int hotel_id;
+    private int type_id;
+    private BigDecimal price;
+    private String availability_status;
+    private String image_url;
+    private Timestamp created_at;
+
+    // Getters and Setters
+    public int getRoom_id() {
+        return room_id;
+    }
+
+    public void setRoom_id(int room_id) {
+        this.room_id = room_id;
+    }
+
+    public int getHotel_id() {
+        return hotel_id;
+    }
+
+    public void setHotel_id(int hotel_id) {
+        this.hotel_id = hotel_id;
+    }
+
+    public int getType_id() {
+        return type_id;
+    }
+
+    public void setType_id(int type_id) {
+        this.type_id = type_id;
+    }
+
+    public BigDecimal getPrice() {
+        return price;
+    }
+
+    public void setPrice(BigDecimal price) {
+        this.price = price;
+    }
+
+    public String getAvailability_status() {
+        return availability_status;
+    }
+
+    public void setAvailability_status(String availability_status) {
+        this.availability_status = availability_status;
+    }
+
+    public String getImage_url() {
+        return image_url;
+    }
+
+    public void setImage_url(String image_url) {
+        this.image_url = image_url;
+    }
+
+    public Timestamp getCreated_at() {
+        return created_at;
+    }
+
+    public void setCreated_at(Timestamp created_at) {
+        this.created_at = created_at;
+    }
+}

@@ -1,0 +1,30 @@
+package com.example.demo.model;
+
+import java.sql.Timestamp;
+
+public class RoomsModel {
+    private int roomId;
+    private int hotelId;
+    private int typeId;
+    private double price;
+    private String availabilityStatus;
+    private String imageUrl;
+    private Timestamp createdAt;
+
+    // Constructors
+    public Room() {}
+
+    public Room(int roomId, int hotelId, int typeId, double price, String availabilityStatus, String imageUrl, Timestamp createdAt) {
+        this.roomId = roomId;
+        this.hotelId = hotelId;
+        this.typeId = typeId;
+        this.price = price;
+        this.availabilityStatus = availabilityStatus;
+        this.imageUrl = imageUrl;
+        this.createdAt = createdAt;
+    }
+
+    // Getters and Setters
+    // (Omitted for brevity)
+}
+

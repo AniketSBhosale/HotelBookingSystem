@@ -1,0 +1,34 @@
+package com.example.demo.controller;
+
+import com.example.demo.model.BookingsModel;
+import com.example.demo.services.BookingsService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/bookings")
+public class BookingsController {
+
+    @Autowired
+    private BookingsServices bookingsService;
+
+    // Get all bookings
+    @GetMapping
+    public List<BookingsModel> getAllBookings() {
+        return bookingsService.getAllBookings();
+    }
+
+    // Get booking by booking_id
+    @GetMapping("/{bookingId}")
+    public BookingsModel getBookingById(@PathVariable int bookingId) {
+        return bookingsService.getBookingById(bookingId);
+    }
+
+    // Add a new booking
+    @PostMapping
+    public String addBooking(@RequestBody BookingsModel booking) {
+        return bookingsService.addBooking(booking);
+    }
+}

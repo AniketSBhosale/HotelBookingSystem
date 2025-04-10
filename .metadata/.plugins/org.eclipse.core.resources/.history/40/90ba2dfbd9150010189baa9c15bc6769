@@ -1,0 +1,46 @@
+package com.example.demo.controller;
+
+import com.example.demo.model.RoomsModel;
+import com.example.demo.services.RoomsService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+//@RequestMapping("/api/rooms")
+public class RoomsController {
+
+    @Autowired
+    private RoomsService roomsService;
+
+    // Get all rooms
+    @GetMapping("/getAllRooms")
+    public List<RoomsModel> getAllRooms() {
+        return roomsService.getAllRooms();
+    }
+
+    // Get room by ID
+    @GetMapping("/{roomId}")
+    public RoomsModel getRoomById(@PathVariable int roomId) {
+        return roomsService.getRoomById(roomId);
+    }
+
+    // Add a new room
+    @PostMapping("/addRooms")
+    public String addRoom(@RequestBody RoomsModel room) {
+        return roomsService.addRoom(room);
+    }
+
+    
+    @PutMapping("/UpdateRoomById{roomId}")
+    public String updateRoom(@PathVariable int roomId, @RequestBody RoomsModel room) {
+        return roomsService.updateRoom(roomId, room);
+    }
+
+    // Delete room by ID
+    @DeleteMapping("/{roomId}")
+    public String deleteRoom(@PathVariable int roomId) {
+        return roomsService.deleteRoom(roomId);
+    }
+}

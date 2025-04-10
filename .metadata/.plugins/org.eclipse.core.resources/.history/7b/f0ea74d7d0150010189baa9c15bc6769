@@ -1,0 +1,57 @@
+package com.example.demo.controller;
+
+import com.example.demo.model.HotelsModel;
+import com.example.demo.repository.HotelsRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/hotels")
+public class HotelsController {
+
+    @Autowired
+    private HotelsRepository hotelsRepository;
+
+    @PostMapping
+    public String addHotel(@RequestBody HotelsModel hotel) {
+        boolean added = hotelsRepository.addHotel(hotel);
+        return added ? "Hotel added successfully" : "Failed to add hotel";
+    }
+    
+   
+    @GetMapping
+    public List<HotelsModel> getAllHotels() {
+        return hotelsRepository.getAllHotels();
+    }
+
+    // Endpoint to get hotel by ID
+    @GetMapping("/{hotelId}")
+    public HotelsModel getHotelById(@PathVariable int hotelId) {
+        HotelsModel hotel = hotelsRepository.getHotelById(hotelId);
+        return hotel != null ? hotel : new HotelsModel(); // Return empty hotel if not found
+    }
+   
+
+    // Endpoint to update hotel and return all hotels
+    @PutMapping("/{hotelId}")
+    public List<HotelsModel> updateHotel(@PathVariable int hotelId, @RequestBody HotelsModel hotel) {
+        hotel.setHotel_id(hotelId); // Set the hotel_id to the URL parameter
+        boolean updated = hotelsRepository.updateHotel(hotel);
+
+        if (updated) {
+            // Return the updated list of all hotels
+            return hotelsRepository.getAllHotels();
+        } else {
+            return null; // Return null if update failed
+        }
+    }
+
+    // Endpoint to delete hotel by ID
+    @DeleteMapping("/{hotelId}")
+    public String deleteHotel(@PathVariable int hotelId) {
+        boolean deleted = hotelsRepository.deleteHotelById(hotelId);
+        return deleted ? "Hotel deleted successfully" : "Failed to delete hotel";
+    }
+}

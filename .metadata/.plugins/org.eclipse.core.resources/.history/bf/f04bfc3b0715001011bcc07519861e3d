@@ -1,0 +1,135 @@
+package com.example.demo.repository;
+
+import java.sql.Timestamp;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Repository;
+
+import com.example.demo.model.HotelsModel;
+
+@Repository
+public class HotelsRepository {
+
+    @Autowired
+    private JdbcTemplate template;
+    
+    public List<HotelsModel> getAllHotels() {
+        String sql = "SELECT * FROM Hotels";
+
+        // Query to get all hotels and map to HotelsModel
+        return template.query(sql, new RowMapper<HotelsModel>() {
+            @Override
+            public HotelsModel mapRow(ResultSet rs, int rowNum) throws SQLException {
+                HotelsModel hotel = new HotelsModel();
+                hotel.setHotel_id(rs.getInt("hotel_id"));
+                hotel.setOwner_id(rs.getInt("owner_id"));
+                hotel.setName(rs.getString("name"));
+                hotel.setLocation(rs.getString("location"));
+                hotel.setCategory(rs.getString("category"));
+                hotel.setCreated_at(rs.getTimestamp("created_at"));
+                return hotel;
+            }
+        });
+    }
+    public Boolean updateHotel(HotelsModel model) {
+        // Validate the owner_id to make sure it's a valid 'Owner'
+        if (!isValidOwner(model.getOwner_id())) {
+            System.out.println("Invalid owner ID or user does not have 'Owner' role: " + model.getOwner_id());
+            return false;
+        }
+
+        // SQL query to update the hotel details
+        String sql = "UPDATE Hotels SET name = ?, location = ?, category = ?, owner_id = ? WHERE hotel_id = ?";
+
+        // Perform the update
+        int rowsAffected = template.update(sql, 
+            model.getName(), 
+            model.getLocation(),
+            model.getCategory(),
+            model.getOwner_id(),
+            model.getHotel_id()  // The unique ID of the hotel we are updating
+        );
+
+        return rowsAffected > 0;
+    }
+    // This method is responsible for inserting a new hotel into the Hotels table.
+    public Boolean isAddNewHotel(HotelsModel model) {
+        String sql = "INSERT INTO Hotels (owner_id, name, location, category, created_at) VALUES (?, ?, ?, ?, ?)";
+
+        // Validate if the user is an owner before inserting the hotel
+        if (!isValidOwner(model.getOwner_id())) {
+            System.out.println("Invalid owner ID or user does not have 'Owner' role: " + model.getOwner_id());
+            return false; // Return false if the owner is invalid or not an 'Owner'
+        }
+
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+
+        // Perform the insert operation
+        int rowsAffected = template.update(sql, 
+            model.getOwner_id(), 
+            model.getName(),
+            model.getLocation(),
+            model.getCategory(),
+            timestamp
+        );
+
+        // Return true if the hotel is successfully added
+        return rowsAffected > 0;
+    }
+
+    // This method checks if the owner_id corresponds to a user who has the 'Owner' role.
+    public boolean isValidOwner(int ownerId) {
+        // SQL query to check if the user has the 'Owner' role
+        String checkOwnerSql = 
+            "SELECT COUNT(*) FROM Users u " +
+            "JOIN Roles r ON u.role_id = r.role_id " +
+            "WHERE u.user_id = ? AND r.role_name = 'Owner'";
+
+        // Query the database to check for the user with the 'Owner' role
+        Integer count = template.queryForObject(checkOwnerSql, new Object[]{ownerId}, Integer.class);
+
+        // Return true if a matching owner is found
+        return count != null && count > 0;
+    }
+    public Boolean updateHotel(HotelsModel model) {
+        // Validate the owner_id to make sure it's a valid 'Owner'
+        if (!isValidOwner(model.getOwner_id())) {
+            System.out.println("Invalid owner ID or user does not have 'Owner' role: " + model.getOwner_id());
+            return false;
+        }
+
+        // SQL query to update the hotel details
+        String sql = "UPDATE Hotels SET name = ?, location = ?, category = ?, owner_id = ? WHERE hotel_id = ?";
+        
+        // Perform the update
+        int rowsAffected = template.update(sql, 
+            model.getName(), 
+            model.getLocation(),
+            model.getCategory(),
+            model.getOwner_id(), // Ensure the 'Owner' role is valid for the given owner_id
+            model.getHotel_id()   // The unique ID of the hotel we are updating
+        );
+
+        return rowsAffected > 0;
+    }
+    
+    public Boolean deleteHotelById(int hotelId) {
+        // Check if the hotel exists before attempting to delete
+        String checkHotelSql = "SELECT COUNT(*) FROM Hotels WHERE hotel_id = ?";
+        Integer count = template.queryForObject(checkHotelSql, new Object[]{hotelId}, Integer.class);
+
+        if (count == null || count == 0) {
+            System.out.println("Hotel with ID " + hotelId + " does not exist.");
+            return false; // If the hotel does not exist, return false
+        }
+
+        // SQL query to delete the hotel
+        String sql = "DELETE FROM Hotels WHERE hotel_id = ?";
+        
+        // Perform the deletion
+        int rowsAffected = template.update(sql, hotelId);
+
+        return rowsAffected > 0;
+    }
+}

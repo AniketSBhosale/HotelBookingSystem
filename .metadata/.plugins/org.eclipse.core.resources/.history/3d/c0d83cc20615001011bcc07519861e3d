@@ -1,0 +1,56 @@
+package com.example.demo.repository;
+
+import java.sql.Timestamp;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Repository;
+
+import com.example.demo.model.HotelsModel;
+
+@Repository
+public class HotelsRepository {
+
+    @Autowired
+    private JdbcTemplate template;
+
+    // This method is responsible for inserting a new hotel into the Hotels table.
+    public Boolean isAddNewHotel(HotelsModel model) {
+        String sql = "INSERT INTO Hotels (owner_id, name, location, category, created_at) VALUES (?, ?, ?, ?, ?)";
+
+        // Validate if the user is an owner before inserting the hotel
+        if (!isValidOwner(model.getOwner_id())) {
+            System.out.println("Invalid owner ID or user does not have 'Owner' role: " + model.getOwner_id());
+            return false; // Return false if the owner is invalid or not an 'Owner'
+        }
+
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+
+        // Perform the insert operation
+        int rowsAffected = template.update(sql, 
+            model.getOwner_id(), 
+            model.getName(),
+            model.getLocation(),
+            model.getCategory(),
+            timestamp
+        );
+
+        // Return true if the hotel is successfully added
+        return rowsAffected > 0;
+    }
+
+    // This method checks if the owner_id corresponds to a user who has the 'Owner' role.
+    public boolean isValidOwner(int ownerId) {
+        // SQL query to check if the user has the 'Owner' role
+        String checkOwnerSql = 
+            "SELECT COUNT(*) FROM Users u " +
+            "JOIN Roles r ON u.role_id = r.role_id " +
+            "WHERE u.user_id = ? AND r.role_name = 'Owner'";
+
+        // Query the database to check for the user with the 'Owner' role
+        Integer count = template.queryForObject(checkOwnerSql, new Object[]{ownerId}, Integer.class);
+
+        // Return true if a matching owner is found
+        return count != null && count > 0;
+    }
+}

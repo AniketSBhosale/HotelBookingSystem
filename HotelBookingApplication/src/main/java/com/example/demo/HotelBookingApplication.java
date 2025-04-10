@@ -6,7 +6,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 @SpringBootApplication
-public class HotelBookingApplication {
+public class HotelBookingApplication { 
 
 	public static void main(String[] args) {
 		ApplicationContext context = SpringApplication.run(HotelBookingApplication.class, args);
@@ -15,7 +15,7 @@ public class HotelBookingApplication {
 		if(template != null) {
 			System.out.print("Database connected");
 		}
-		else {
+		else {	
 			System.out.print("Database not connected");
 		}
 	
